@@ -69,12 +69,12 @@ spec:
       containers:
       - name: rabbitmq
         image: krishna88s/rabbitmq:1.1.0
+        envFrom:
+        - configMapRef:
+            name: rabbitmq-configmap
         volumeMounts:
         - name: rabbitmq
           mountPath: /var/lib/rabbitmq
-      envFrom:
-      - configMapRef:
-          name: rabbitmq-configmap
   #PVC         
   volumeClaimTemplates:
   - metadata:
