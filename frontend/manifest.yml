@@ -132,6 +132,7 @@ spec:
             port: 80
           failureThreshold: 4
           periodSeconds: 10   
+          initialDelaySeconds: 20
         volumeMounts:
         - name: nginx-config
           mountPath: "/etc/nginx/nginx.conf"
