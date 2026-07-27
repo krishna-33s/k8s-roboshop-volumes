@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalogue-configmap
+  namespace: roboshop
+  labels:
+    project: roboshop
+    tier: backend
+    component: catalogue
+    environment: dev
+
+data:
+  MONGO: "true"
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: roboshop
+  # this labels is for replicaset
+  labels:
+    project: roboshop
+    tier: backend
+    component: catalogue
+    environment: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      # these labels is for replicaset to select the pods
+      project: roboshop
+      tier: backend
+      component: catalogue
+      environment: dev
+  template:
+    metadata:
+    # these for pod defination
+      labels:
+        project: roboshop
+        tier: backend
+        component: catalogue
+        environment: dev
+    spec:
+      containers:
+      - name: catalogue
+        image: krishna88s/catalogue:1.1.0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 4
+          periodSeconds: 10
+          initialDelaySeconds: 15   
+        livenessProbe: 
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 4
+          periodSeconds: 10   
+        envFrom:
+        - configMapRef:
+            name: catalogue-configmap
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  namespace: roboshop
+  labels:
+    project: roboshop
+    tier: backend
+    component: catalogue
+    environment: dev
+spec:
+  selector:
+      project: roboshop
+      tier: backend
+      component: catalogue
+      environment: dev
+
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: catalogue
+  namespace: roboshop
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: catalogue
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 10
