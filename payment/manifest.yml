@@ -71,6 +71,7 @@ spec:
             port: 8080
           failureThreshold: 4
           periodSeconds: 10   
+          initialDelaySeconds: 20
         envFrom:
         - configMapRef:
             name: payment-configmap
