@@ -60,14 +60,14 @@ spec:
             port: 8080
           failureThreshold: 4
           periodSeconds: 10
-          initialDelaySeconds: 20  
+          initialDelaySeconds: 30
         startupProbe:
           httpGet:
             path: /health
             port: 8080
           failureThreshold: 25
           periodSeconds: 10
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
         livenessProbe: 
           httpGet:
             path: /health
