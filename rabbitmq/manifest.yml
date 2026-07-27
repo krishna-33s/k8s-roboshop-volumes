@@ -54,14 +54,14 @@ spec:
       containers:
       - name: rabbitmq
         image: krishna88s/rabbitmq:1.1.0
+        volumeMounts:
+        - name: rabbitmq
+          mountPath: /var/lib/rabbitmq
         env:
         - name: RABBITMQ_DEFAULT_USER
           value: roboshop
         - name: RABBITMQ_DEFAULT_PASS
-          value: roboshop123
-        volumeMounts:
-        - name: rabbitmq
-          mountPath: /var/lib/rabbitmq
+          value: roboshop123  
   #PVC         
   volumeClaimTemplates:
   - metadata:
