@@ -48,7 +48,6 @@ spec:
         component: mongodb
         environment: dev # has to match .spec.selector.matchLabels
     spec:
-      terminationGracePeriodSeconds: 10
       containers:
       - name: mongodb
         image: krishna88s/mongodb:1.1.0
